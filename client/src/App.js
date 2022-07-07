@@ -13,9 +13,6 @@ import Footer from "./components/Footer";
 // import GlobalState Provider
 import { MooveeGlobal } from "./utils/GlobalState";
 
-// stylesheets
-// import "./App.scss";
-
 const client = new ApolloClient({
   request: (operation) => {
     const token = localStorage.getItem("id_token");
@@ -34,7 +31,7 @@ function App() {
     <ApolloProvider client={client}>
       <Router>
         <MooveeGlobal>
-          <div className="app-container">
+          <div className="app-container bg-light">
             <div className="app-content">
               <Navbar />
               <Switch>

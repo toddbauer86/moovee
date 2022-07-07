@@ -132,18 +132,18 @@ const SavedMovies = () => {
 
   return (
     <>
-      <Jumbotron fluid className="text-light bg-primary">
+      <Jumbotron fluid className="text-dark bg-light">
         <Container>
           <h1>My Movies</h1>
         </Container>
       </Jumbotron>
-      <Container>
+      <Container className="bg-light">
         <h2 className="pb-5">
           {likedMovies.length
             ? `Displaying ${likedMovies.length} saved ${
                 likedMovies.length === 1 ? "movie" : "movies"
               }:`
-            : "You have no saved movies!"}
+            : "You have no saved movies."}
         </h2>
         <CardColumns>
           {likedMovies?.length && likedMovies.length > 0

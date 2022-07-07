@@ -11,23 +11,36 @@ const AppNavbar = () => {
 
   return (
     <>
-      <Navbar collapseOnSelect expand="lg" bg="black" variant="dark">
+      <Navbar collapseOnSelect expand="lg bg-light">
         <Navbar.Brand as={Link} to="/">
           MooVee
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbar" />
         <Navbar.Collapse id="navbar">
-          <Nav className="ml-auto">
-            <Nav.Link as={Link} to="/search">
+          <Nav className="ml-auto ">
+            <Nav.Link
+              as={Link}
+              to="/search"
+              style={{ color: "black", textDecoration: "none" }}
+            >
               Search For Movies
             </Nav.Link>
             {/* if user is logged in show saved movies and logout */}
             {Auth.loggedIn() ? (
               <>
-                <Nav.Link as={Link} to="/saved">
+                <Nav.Link
+                  as={Link}
+                  to="/saved"
+                  style={{ color: "black", textDecoration: "none" }}
+                >
                   Saved Movies
                 </Nav.Link>
-                <Nav.Link onClick={Auth.logout}>Logout</Nav.Link>
+                <Nav.Link
+                  onClick={Auth.logout}
+                  style={{ color: "black", textDecoration: "none" }}
+                >
+                  Logout
+                </Nav.Link>
               </>
             ) : (
               <Nav.Link onClick={() => setShowModal(true)}>

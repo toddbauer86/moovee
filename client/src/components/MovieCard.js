@@ -13,14 +13,6 @@ import {
 } from "react-bootstrap";
 import StarRatings from "react-star-ratings";
 import { useAccordionToggle } from "react-bootstrap/AccordionToggle";
-// import {
-//   MdChevronRight,
-//   MdChevronLeft,
-//   MdFavoriteBorder,
-//   MdClose,
-//   MdKeyboardArrowDown,
-//   MdKeyboardArrowUp,
-// } from "react-icons/md";
 
 // import utils
 import Auth from "../utils/auth";
@@ -57,9 +49,9 @@ const MovieCard = (props) => {
         onClick={decoratedOnClick}
       >
         {isCurrentEventKey ? (
-          <span className="small">Hide</span>
+          <span className="small">Less</span>
         ) : (
-          <span className="small">Click for details </span>
+          <span className="small">More </span>
         )}
       </Button>
     );

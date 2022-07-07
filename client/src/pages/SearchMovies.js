@@ -205,7 +205,7 @@ const SearchMovies = () => {
 
   return (
     <>
-      <Jumbotron fluid className="text-light bg-primary">
+      <Jumbotron fluid className="text-dark bg-light">
         <Container>
           <Form onSubmit={(event) => handleFormSubmit(event, searchInput)}>
             <Form.Label className="h3">
@@ -216,9 +216,9 @@ const SearchMovies = () => {
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               type="text"
-              placeholder="A Bridge Over the River Kwai"
+              placeholder="The Bridge on the River Kwai"
             />
-            <Button type="submit" className="mt-2">
+            <Button type="submit" className="mt-2 btn-info">
               Search
             </Button>
           </Form>

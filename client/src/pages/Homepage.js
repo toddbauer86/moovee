@@ -288,7 +288,7 @@ const Homepage = () => {
 
   return (
     <>
-      <Jumbotron fluid className="text-light bg-primary">
+      <Jumbotron fluid className="text-dark bg-light">
         <Container>
           <h1>Welcome to MooVee!</h1>
           {Auth.loggedIn() ? (
