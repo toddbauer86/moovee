@@ -13,8 +13,8 @@ import {
   UPDATE_MOVIE_PREFERENCES,
 } from "../utils/actions";
 // IDB
-import { idbPromise } from "../utils/helpers";
-import { findIndexByAttr } from "../utils/helpers";
+import { dbProm } from "../utils/helpers";
+import { findIndexAt } from "../utils/helpers";
 
 const SavedMovies = () => {
   // State
@@ -46,8 +46,8 @@ const SavedMovies = () => {
       }
       // if we're offline, use idb to update movie preferences
       else if (!loading) {
-        idbPromise("likedMovies", "get").then((likedMovies) => {
-          idbPromise("dislikedMovies", "get").then((dislikedMovies) => {
+        dbProm("likedMovies", "get").then((likedMovies) => {
+          dbProm("dislikedMovies", "get").then((dislikedMovies) => {
             if (dislikedMovies.length || likedMovies.length) {
               console.log(
                 "Offline, using data from idb to update movie preferences"
@@ -64,10 +64,10 @@ const SavedMovies = () => {
     }
   }, [data, loading, likedMovies, dislikedMovies, dispatch]);
 
-  const handleLikeMovie = (likedMovie) => {
+  const handleLikeMovie = (likedMovies) => {
     // update the db
     likeMovie({
-      variables: { movieId: likedMovie._id },
+      variables: { movieId: likedMovies._id },
     })
       .then(({ data }) => {
         console.log(data.likeMovie);
@@ -80,16 +80,16 @@ const SavedMovies = () => {
           });
 
           // find the updated movie
-          const likedMovieIndex = findIndexByAttr(
+          const likedMovieIndex = findIndexAt(
             data.likeMovie.likedMovies,
             "_id",
-            likedMovie._id
+            likedMovies._id
           );
           const updatedLikedMovie = data.likeMovie.likedMovies[likedMovieIndex];
 
           // update idb
-          idbPromise("likedMovies", "put", updatedLikedMovie);
-          idbPromise("dislikedMovies", "delete", updatedLikedMovie);
+          dbProm("likedMovies", "put", updatedLikedMovie);
+          dbProm("dislikedMovies", "delete", updatedLikedMovie);
         } else {
           console.error("Couldn't like the movie!");
         }
@@ -112,7 +112,7 @@ const SavedMovies = () => {
           });
 
           // find the updated movie
-          const dislikedMovieIndex = await findIndexByAttr(
+          const dislikedMovieIndex = await findIndexAt(
             data.dislikeMovie.dislikedMovies,
             "_id",
             dislikedMovie._id
@@ -121,8 +121,8 @@ const SavedMovies = () => {
             data.dislikeMovie.dislikedMovies[dislikedMovieIndex];
 
           // update idb
-          idbPromise("likedMovies", "delete", updatedDislikedMovie);
-          idbPromise("dislikedMovies", "put", updatedDislikedMovie);
+          dbProm("likedMovies", "delete", updatedDislikedMovie);
+          dbProm("dislikedMovies", "put", updatedDislikedMovie);
         } else {
           console.error("Couldn't dislike the movie!");
         }

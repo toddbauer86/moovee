@@ -1,4 +1,4 @@
-export function findIndexByAttr(array, attr, value) {
+export function findIndexAt(array, attr, value) {
   for (var i = 0; i < array.length; i += 1) {
     if (array[i][attr] === value) {
       return i;
@@ -7,7 +7,7 @@ export function findIndexByAttr(array, attr, value) {
   return -1;
 }
 
-export function idbPromise(storeName, method, object) {
+export function dbProm(storeName, method, object) {
   return new Promise((resolve, reject) => {
     const request = window.indexedDB.open("movee", 1);
 

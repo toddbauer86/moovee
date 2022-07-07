@@ -8,9 +8,9 @@ import {
   Jumbotron,
 } from "react-bootstrap";
 import MovieCard from "../components/MovieCard";
-import { cleanMovieData } from "../utils/movieData";
+import { finalMovieData } from "../utils/movieData";
 // TMDB API
-import { searchTMDB } from "../utils/API";
+import { findMovie } from "../utils/API";
 // GraphQL
 import { ADD_MOVIE, DISLIKE_MOVIE, LIKE_MOVIE } from "../utils/mutations";
 import { GET_USER } from "../utils/queries";
@@ -23,8 +23,8 @@ import {
   UPDATE_MOVIE_PREFERENCES,
 } from "../utils/actions";
 // IndexedDB
-import { idbPromise } from "../utils/helpers";
-import { findIndexByAttr } from "../utils/helpers";
+import { dbProm } from "../utils/helpers";
+import { findIndexAt } from "../utils/helpers";
 
 const SearchMovies = () => {
   // State
@@ -62,8 +62,8 @@ const SearchMovies = () => {
       }
       // if we're offline, use idb to update movie preferences
       else if (!loading) {
-        idbPromise("likedMovies", "get").then((likedMovies) => {
-          idbPromise("dislikedMovies", "get").then((dislikedMovies) => {
+        dbProm("likedMovies", "get").then((likedMovies) => {
+          dbProm("dislikedMovies", "get").then((dislikedMovies) => {
             if (dislikedMovies.length || likedMovies.length) {
               console.log(
                 "Offline, using data from idb to update movie preferences"
@@ -90,7 +90,7 @@ const SearchMovies = () => {
       return false;
     }
 
-    const response = await searchTMDB(searchInput);
+    const response = await findMovie(searchInput);
 
     if (!response.ok) {
       throw new Error("Couldn't search for movies");
@@ -105,7 +105,7 @@ const SearchMovies = () => {
       return;
     }
 
-    const cleanedMovies = await cleanMovieData(results);
+    const cleanedMovies = await finalMovieData(results);
 
     const updatedSearchedMovies = [];
     for (let i = 0; i < cleanedMovies.length; i++) {
@@ -124,7 +124,7 @@ const SearchMovies = () => {
       });
 
       // add to idb
-      idbPromise("movies", "put", newMovie);
+      dbProm("movies", "put", newMovie);
 
       // update searchedMovies state
       if (!addMovieError) {
@@ -137,10 +137,10 @@ const SearchMovies = () => {
     setResultsFound(true);
   };
 
-  const handleLikeMovie = (likedMovie) => {
+  const handleLikeMovie = (likedMovies) => {
     // update the db
     likeMovie({
-      variables: { movieId: likedMovie._id },
+      variables: { movieId: likedMovies._id },
     })
       .then(({ data }) => {
         console.log(data.likeMovie);
@@ -153,16 +153,16 @@ const SearchMovies = () => {
           });
 
           // find the updated movie
-          const likedMovieIndex = findIndexByAttr(
+          const likedMovieIndex = findIndexAt(
             data.likeMovie.likedMovies,
             "_id",
-            likedMovie._id
+            likedMovies._id
           );
           const updatedLikedMovie = data.likeMovie.likedMovies[likedMovieIndex];
 
           // update idb
-          idbPromise("likedMovies", "put", updatedLikedMovie);
-          idbPromise("dislikedMovies", "delete", updatedLikedMovie);
+          dbProm("likedMovies", "put", updatedLikedMovie);
+          dbProm("dislikedMovies", "delete", updatedLikedMovie);
         } else {
           console.error("Couldn't like the movie!");
         }
@@ -185,7 +185,7 @@ const SearchMovies = () => {
           });
 
           // find the updated movie
-          const dislikedMovieIndex = await findIndexByAttr(
+          const dislikedMovieIndex = await findIndexAt(
             data.dislikeMovie.dislikedMovies,
             "_id",
             dislikedMovie._id
@@ -194,8 +194,8 @@ const SearchMovies = () => {
             data.dislikeMovie.dislikedMovies[dislikedMovieIndex];
 
           // update idb
-          idbPromise("likedMovies", "delete", updatedDislikedMovie);
-          idbPromise("dislikedMovies", "put", updatedDislikedMovie);
+          dbProm("likedMovies", "delete", updatedDislikedMovie);
+          dbProm("dislikedMovies", "put", updatedDislikedMovie);
         } else {
           console.error("Couldn't dislike the movie!");
         }

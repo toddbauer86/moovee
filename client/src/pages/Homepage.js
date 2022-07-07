@@ -4,7 +4,7 @@ import { Container, Jumbotron } from "react-bootstrap";
 import MovieCard from "../components/MovieCard";
 import { direction } from "react-deck-swiper";
 // TMDB API
-import { getTrendingMovies } from "../utils/API";
+import { getTrend } from "../utils/API";
 // GraphQL
 import { ADD_MOVIE, DISLIKE_MOVIE, LIKE_MOVIE } from "../utils/mutations";
 import { GET_USER } from "../utils/queries";
@@ -18,11 +18,11 @@ import {
   UPDATE_MOVIES,
 } from "../utils/actions";
 // IndexedDB
-import { idbPromise } from "../utils/helpers";
-import { cleanMovieData } from "../utils/movieData";
+import { dbProm } from "../utils/helpers";
+import { finalMovieData } from "../utils/movieData";
 // Other Utils
 import Auth from "../utils/auth";
-import { findIndexByAttr } from "../utils/helpers";
+import { findIndexAt } from "../utils/helpers";
 
 const Homepage = () => {
   const [state, dispatch] = useMoveeContext();
@@ -58,8 +58,8 @@ const Homepage = () => {
       }
       // if we're offline, use idb to update movie preferences
       else if (!loading) {
-        idbPromise("likedMovies", "get").then((likedMovies) => {
-          idbPromise("dislikedMovies", "get").then((dislikedMovies) => {
+        dbProm("likedMovies", "get").then((likedMovies) => {
+          dbProm("dislikedMovies", "get").then((dislikedMovies) => {
             if (dislikedMovies.length || likedMovies.length) {
               console.log(
                 "Offline, using data from idb to update movie preferences"
@@ -85,7 +85,7 @@ const Homepage = () => {
       if (Auth.loggedIn()) {
         for (let i = 0; i < movies.length; i++) {
           const isLiked = likedMovies.some(
-            (likedMovie) => likedMovie._id === movies[i]._id
+            (likedMovies) => likedMovies._id === movies[i]._id
           );
           const isDisliked = dislikedMovies.some(
             (dislikedMovie) => dislikedMovie._id === movies[i]._id
@@ -112,11 +112,11 @@ const Homepage = () => {
       // if we're online, ping the API to get our movie preferences
       try {
         console.log("Pinging TMDB API to get trending movies");
-        getTrendingMovies("week").then((res) => {
+        getTrend("week").then((res) => {
           if (res.ok) {
             res.json().then(async ({ results }) => {
               // clean the data to match our MovieSchema
-              const cleanedMovieData = await cleanMovieData(results);
+              const cleanedMovieData = await finalMovieData(results);
               cleanedMovieData.forEach(async (movie) => {
                 // add the movie to the db
                 const result = await addMovie({ variables: { input: movie } });
@@ -135,7 +135,7 @@ const Homepage = () => {
                 });
 
                 // add to idb
-                idbPromise("movies", "put", newMovie);
+                dbProm("movies", "put", newMovie);
               });
             });
           } else {
@@ -148,7 +148,7 @@ const Homepage = () => {
           "Couldn't get data from TMDB API. Using IDB to display movies."
         );
 
-        idbPromise("movies", "get").then((movies) => {
+        dbProm("movies", "get").then((movies) => {
           if (movies.length) {
             console.log("Using IDB to get trending movies");
             dispatch({
@@ -161,10 +161,10 @@ const Homepage = () => {
     }
   }, [movies, data, dispatch, loading, addMovie, addMovieError]);
 
-  const handleLikeMovie = (likedMovie) => {
+  const handleLikeMovie = (likedMovies) => {
     // update the db
     likeMovie({
-      variables: { movieId: likedMovie._id },
+      variables: { movieId: likedMovies._id },
     })
       .then(({ data }) => {
         if (data) {
@@ -176,16 +176,16 @@ const Homepage = () => {
           });
 
           // find the updated movie
-          const likedMovieIndex = findIndexByAttr(
+          const likedMovieIndex = findIndexAt(
             data.likeMovie.likedMovies,
             "_id",
-            likedMovie._id
+            likedMovies._id
           );
           const updatedLikedMovie = data.likeMovie.likedMovies[likedMovieIndex];
 
           // update idb
-          idbPromise("likedMovies", "put", updatedLikedMovie);
-          idbPromise("dislikedMovies", "delete", updatedLikedMovie);
+          dbProm("likedMovies", "put", updatedLikedMovie);
+          dbProm("dislikedMovies", "delete", updatedLikedMovie);
 
           // skip to the next movie
           handleNextMovie();
@@ -211,7 +211,7 @@ const Homepage = () => {
           });
 
           // find the updated movie
-          const dislikedMovieIndex = await findIndexByAttr(
+          const dislikedMovieIndex = await findIndexAt(
             data.dislikeMovie.dislikedMovies,
             "_id",
             dislikedMovie._id
@@ -220,8 +220,8 @@ const Homepage = () => {
             data.dislikeMovie.dislikedMovies[dislikedMovieIndex];
 
           // update idb
-          idbPromise("likedMovies", "delete", updatedDislikedMovie);
-          idbPromise("dislikedMovies", "put", updatedDislikedMovie);
+          dbProm("likedMovies", "delete", updatedDislikedMovie);
+          dbProm("dislikedMovies", "put", updatedDislikedMovie);
 
           // skip to the next movie
           handleNextMovie();
@@ -248,7 +248,7 @@ const Homepage = () => {
       if (Auth.loggedIn()) {
         for (let i = movieIndex + 1; i < movies.length; i++) {
           const isLiked = likedMovies.some(
-            (likedMovie) => likedMovie._id === movies[i]._id
+            (likedMovies) => likedMovies._id === movies[i]._id
           );
           const isDisliked = dislikedMovies.some(
             (dislikedMovie) => dislikedMovie._id === movies[i]._id
@@ -268,24 +268,6 @@ const Homepage = () => {
     }
   };
 
-  // const handleSwipe = (swipeDirection) => {
-  //   if (swipeDirection === direction.RIGHT) {
-  //     setLastSwipe("right");
-  //     if (Auth.loggedIn()) {
-  //       handleLikeMovie(movies[movieIndex]);
-  //     } else {
-  //       handlePrevMovie();
-  //     }
-  //   } else if (swipeDirection === direction.LEFT) {
-  //     setLastSwipe("left");
-  //     if (Auth.loggedIn()) {
-  //       handleDislikeMovie(movies[movieIndex]);
-  //     } else {
-  //       handleNextMovie();
-  //     }
-  //   }
-  // };
-
   return (
     <>
       <Jumbotron fluid className="text-dark bg-light">
@@ -298,37 +280,6 @@ const Homepage = () => {
           )}
         </Container>
       </Jumbotron>
-
-      {/* <Container>
-        {loading ? <h2>Loading....</h2> : null}
-        {moviesToDisplay ? (
-          <Swipeable
-            onSwipe={handleSwipe}
-            fadeThreshold={200}
-            swipeThreshold={40}
-            onAfterSwipe={() =>
-              console.log(`${movies[movieIndex].title} swiped`)
-            }
-          >
-            <MovieCard
-              movie={movies[movieIndex]}
-              displayTrailer
-              displaySkip
-              likeMovieHandler={handleLikeMovie}
-              dislikeMovieHandler={handleDislikeMovie}
-              nextMovieHandler={handleNextMovie}
-              prevMovieHandler={handlePrevMovie}
-            />
-          </Swipeable>
-        ) : (
-          <h3 className="text-center">No more movies to display!</h3>
-        )}
-        <h4 className="text-center mt-3">
-          {lastSwipe
-            ? `You swiped ${lastSwipe} on ${movies[movieIndex].title}!`
-            : null}
-        </h4>
-      </Container> */}
     </>
   );
 };

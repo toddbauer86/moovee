@@ -196,11 +196,11 @@ const MovieCard = (props) => {
                 <Button
                   className="btn-round-lg mr-3"
                   disabled={likedMovies?.some(
-                    (likedMovie) => likedMovie._id === movie._id
+                    (likedMovies) => likedMovies._id === movie._id
                   )}
                   variant={
                     likedMovies?.some(
-                      (likedMovie) => likedMovie._id === movie._id
+                      (likedMovies) => likedMovies._id === movie._id
                     )
                       ? "outline-secondary"
                       : "outline-success"

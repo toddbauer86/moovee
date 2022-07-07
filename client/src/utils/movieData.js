@@ -1,7 +1,6 @@
-import { getVideos } from "../utils/API";
 import moment from "moment";
 
-export const cleanMovieData = async (movieData) => {
+export const finalMovieData = async (movieData) => {
   // filter out entries that won't display well
   const movies = movieData.filter(
     (movie) => movie.poster_path && movie.overview

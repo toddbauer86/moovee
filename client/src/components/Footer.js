@@ -39,7 +39,9 @@ const AppFooter = () => {
             <p>© 2022 MooveeBoyz Productions</p>
           </div>
           <div className="d-flex justify-content-center text-dark col-md-12">
-            <p></p>
+            <p>
+              <img src={image} width={35} />
+            </p>
           </div>
         </Container>
       </Container>
