@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Navbar, Nav, Modal, Tab } from "react-bootstrap";
 import SignUpForm from "./SignupForm";
 import LoginForm from "./LoginForm";
+import image from "../images/icon.png";
 
 const AppNavbar = () => {
   // set modal display state
@@ -13,7 +14,7 @@ const AppNavbar = () => {
     <>
       <Navbar collapseOnSelect expand="lg bg-light">
         <Navbar.Brand as={Link} to="/">
-          MooVee
+          MooVee <img src={image} width={20} />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbar" />
         <Navbar.Collapse id="navbar">

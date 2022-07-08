@@ -31,19 +31,18 @@ function App() {
     <ApolloProvider client={client}>
       <Router>
         <MooveeGlobal>
-          <div className="app-container bg-light">
-            <div className="app-content">
-              <Navbar />
-              <Switch>
-                <Route exact path="/" component={Homepage} />
-                <Route exact path="/search" component={SearchMovies} />
-                <Route exact path="/saved" component={SavedMovies} />
-                <Route
-                  render={() => <h1 className="display-2">Wrong page!</h1>}
-                />
-              </Switch>
-            </div>
+          <div className="app-content bg-light" style={{ height: "93vh" }}>
+            <Navbar />
+            <Switch>
+              <Route exact path="/" component={Homepage} />
+              <Route exact path="/search" component={SearchMovies} />
+              <Route exact path="/saved" component={SavedMovies} />
+              <Route
+                render={() => <h1 className="display-2">Wrong page!</h1>}
+              />
+            </Switch>
           </div>
+
           <Footer />
         </MooveeGlobal>
       </Router>

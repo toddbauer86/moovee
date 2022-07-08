@@ -241,7 +241,6 @@ const SearchMovies = () => {
                   <MovieCard
                     key={movie._id}
                     movie={movie}
-                    // displayTrailer
                     likeMovieHandler={handleLikeMovie}
                     dislikeMovieHandler={handleDislikeMovie}
                   />
