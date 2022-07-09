@@ -45,3 +45,14 @@ body {
   list-style: none;
 }
 
+.moovee-parent{
+  
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh
+}
+
+#moovee-main{
+
+  flex-grow: 1;
+}
