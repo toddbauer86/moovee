@@ -6,11 +6,11 @@ import giticon from "../images/gh.png";
 const AppFooter = () => {
   return (
     <>
-      <Container fluid className="text-light page-footer d-flex bg-light">
+      <Container fluid className="bg-light">
         <Container>
           <div className="d-flex justify-content-center text-dark col-md-12">
             <a href="https://github.com/toddbauer86/moovee" rel="noreferrer">
-              <img src={giticon} width={35} />{" "}
+              <img src={giticon} alt="github" width={35} />{" "}
             </a>
           </div>
           <div className="d-flex justify-content-center text-dark col-md-12">

@@ -14,7 +14,7 @@ const AppNavbar = () => {
     <>
       <Navbar collapseOnSelect expand="lg bg-light">
         <Navbar.Brand as={Link} to="/">
-          MooVee <img src={image} width={20} />
+          <img src={image} alt="moo" width={20} /> MooVee
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbar" />
         <Navbar.Collapse id="navbar">
@@ -48,7 +48,7 @@ const AppNavbar = () => {
                 onClick={() => setShowModal(true)}
                 style={{ color: "black", textDecoration: "none" }}
               >
-                Login/Sign Up
+                Login or Sign Up
               </Nav.Link>
             )}
           </Nav>

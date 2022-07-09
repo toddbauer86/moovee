@@ -60,7 +60,7 @@ const MovieCard = (props) => {
                 Like
               </Button>
             </>
-          ) : null}
+          ) : null}{" "}
         </Card.Footer>
       </Card>
     </>
