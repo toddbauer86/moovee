@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import gql from 'graphql-tag';
 
 export const GET_USER = gql`
   {
@@ -9,7 +9,7 @@ export const GET_USER = gql`
       friends {
         _id
       }
-      likedMovies {
+      likedMovies{
         _id
         externalMovieId
         rating
@@ -22,10 +22,13 @@ export const GET_USER = gql`
         likedUsers {
           _id
           username
-          email
+        }
+        dislikedUsers {
+          _id
+          username
         }
       }
-      dislikedMovies {
+      dislikedMovies{
         _id
         externalMovieId
         rating
@@ -38,7 +41,10 @@ export const GET_USER = gql`
         likedUsers {
           _id
           username
-          email
+        }
+        dislikedUsers {
+          _id
+          username
         }
       }
     }

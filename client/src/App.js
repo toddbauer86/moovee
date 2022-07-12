@@ -12,6 +12,7 @@ import Footer from "./components/Footer";
 
 // import GlobalState Provider
 import { MooveeGlobal } from "./utils/GlobalState";
+import "./index.css";
 
 const client = new ApolloClient({
   request: (operation) => {
