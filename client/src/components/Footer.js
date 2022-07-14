@@ -14,7 +14,7 @@ const AppFooter = () => {
             </a>
           </div>
           <div className="d-flex justify-content-center text-dark col-md-12">
-            <p>© 2022 Todd Bauer</p>
+            <p>© 2022 Moovee Boyz</p>
           </div>
         </Container>
       </Container>

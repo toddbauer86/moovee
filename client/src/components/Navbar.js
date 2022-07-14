@@ -7,7 +7,6 @@ import LoginForm from "./LoginForm";
 import image from "../images/icon.png";
 
 const AppNavbar = () => {
-  // set modal display state
   const [showModal, setShowModal] = useState(false);
 
   return (
@@ -26,7 +25,7 @@ const AppNavbar = () => {
             >
               Search For Movies
             </Nav.Link>
-            {/* if user is logged in show saved movies and logout */}
+
             {Auth.loggedIn() ? (
               <>
                 <Nav.Link
@@ -54,14 +53,13 @@ const AppNavbar = () => {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-      {/* set modal data up */}
+
       <Modal
         size="lg"
         show={showModal}
         onHide={() => setShowModal(false)}
         aria-labelledby="signup-modal"
       >
-        {/* tab container to do either signup or login component */}
         <Tab.Container defaultActiveKey="login">
           <Modal.Header closeButton>
             <Modal.Title id="signup-modal">
